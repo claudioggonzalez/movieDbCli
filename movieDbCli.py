@@ -16,20 +16,131 @@ def printLog(msgLogLevel, logMessage):
     if msgLogLevel >= LOG_LEVEL:
         print(logMessage)
 
-def getMovieById():
-    options = ["[1]Define ID to get","[0]Return MAIN MENU"]
-    menuEntryIdx = displayMenu(options, "GET MOVIE BY ID:\n-----------------")
+def getMovieById(id = -1):
+    if id == -1:
+        options = ["[1]Define ID to get","[0]Return MAIN MENU"]
+        menuEntryIdx = displayMenu(options, "GET MOVIE BY ID:\n-----------------")
+        
+        if options[menuEntryIdx] == options[0]:
+            id = int(input("Movie ID: "))
+            #GET requests
+        elif options[menuEntryIdx] == options[1]:
+            main()
+        else:
+            print("Opción Desconocida!!!")
+            exit(1)
+    else:
+        #GET request (id)
+        return ()
+
+def getMovieByTitle():
+    options = ["[1]Define Title to get","[0]Return MAIN MENU"]
+    menuEntryIdx = displayMenu(options, "GET MOVIE BY TITLE:\n--------------------")
     
     if options[menuEntryIdx] == options[0]:
-        id = int(input("Movie ID: "))
-        requests
+        id = int(input("Movie Title: "))
+        #GET requests
+        pass
     elif options[menuEntryIdx] == options[1]:
         main()
     else:
         print("Opción Desconocida!!!")
         exit(1)
 
-def displayMenu(options, menuTitle):
+def getMovieBatch(title = ""):
+    if title == "":
+        options = ["[1]Get Movie Batch","[0]Return MAIN MENU"]
+        menuEntryIdx = displayMenu(options, "GET MOVIE BATCH:\n---------------")
+        
+        if options[menuEntryIdx] == options[0]:
+            #GET requests
+            pass
+        elif options[menuEntryIdx] == options[1]:
+            main()
+        else:
+            print("Opción Desconocida!!!")
+            exit(1)
+    else:
+        #GET request
+        return()
+
+def getMovieBatch():
+    options = ["[1]Get Movie Batch","[0]Return MAIN MENU"]
+    menuEntryIdx = displayMenu(options, "GET MOVIE BATCH:\n---------------")
+    
+    if options[menuEntryIdx] == options[0]:
+        # GET requests
+        pass
+    elif options[menuEntryIdx] == options[1]:
+        main()
+    else:
+        print("Opción Desconocida!!!")
+        exit(1)
+
+def addMovie():
+    options = ["[1]Input Movie Data","[0]Return MAIN MENU"]
+    menuEntryIdx = displayMenu(options, "INPUT MOVIE DATA:\n----------------")
+    
+    if options[menuEntryIdx] == options[0]:
+        data = inputMovieData()
+        # POST resquests
+    
+    elif options[menuEntryIdx] == options[1]:
+        main()
+    else:
+        print("Opción Desconocida!!!")
+        exit(1)
+
+def inputMovieData(_data = {"title":"",
+                            "altTitle":"",
+                            "year":0,
+                            "originCountry":"",
+                            "releaseDate":"",
+                            "downloadDate":"",
+                            "subtitle":False,
+                            "status":0}):
+
+    while(_data["title"] == ""):
+        _data["title"] = input("Title (mandatory):")
+    
+    _data["altTitle"] = input("Alternative Title: ")
+    
+    while (_data["year"] < 1900 or _data["year"] > 2100):
+        _data["year"] = int(input("Year [YYYY] (mandatory):"))
+
+    _data["originCountry"] = input("Country of Origin: ")
+
+    _data["releaseDate"] = input("Release Date (YYYY-MM-DD): ")
+
+    _data["downloadDate"] = input("Release Date (YYYY-MM-DD): ")
+
+    _subtitleTxt = input("Has subtitles? (y/N):")
+    if (_subtitleTxt == "y"):
+        _data["subtitle"] = True
+
+    _statusOpt = ["[0] Recorded","[1] Downloaded","[2] Pending","[3] Seen"]
+    _data["status"] = displayMenu(_statusOpt)
+
+    return _data
+
+def updateMovie():
+    options = ["[1]Define ID to get","[0]Return MAIN MENU"]
+    menuEntryIdx = displayMenu(options, "GET MOVIE BY ID:\n-----------------")
+    
+    if options[menuEntryIdx] == options[0]:
+        id = int(input("Movie ID: "))
+        #GET requests
+        #Show movie data from request
+        pass
+    elif options[menuEntryIdx] == options[1]:
+        main()
+    else:
+        print("Opción Desconocida!!!")
+        exit(1)
+
+    pass
+
+def displayMenu(options, menuTitle = ""):
     menu = TerminalMenu(options, title=menuTitle)
     idx = menu.show()
     return idx
@@ -41,16 +152,18 @@ def main():
     if options[menuEntryIdx] == options[0]:
         getMovieById()
     elif options[menuEntryIdx] == options[1]:
-        pass
+        getMovieByTitle()
     elif options[menuEntryIdx] == options[2]:
-        pass
+        getMovieBatch()
     elif options[menuEntryIdx] == options[3]:
-        pass
+        addMovie()
     elif options[menuEntryIdx] == options[4]:
-        pass
+        updateMovie()
     elif options[menuEntryIdx] == options[5]:
+        #Delete Movie (pedir id, confirmacion, mostrar datos, confirmacion, borrar)
         pass
     elif options[menuEntryIdx] == options[6]:
+        #showApiInfo()
         pass
     elif options[menuEntryIdx] == options[7]:
         print("Saliendo...\n")
