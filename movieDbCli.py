@@ -5,6 +5,7 @@ from simple_term_menu import TerminalMenu
 import configparser
 import json
 import requests
+from texttable import Texttable
 
 DEBUG = 0
 INFO = 1
@@ -20,7 +21,7 @@ def getMovieById(id = -1):
     if id == -1:
         options = ["[1]Define ID to get","[0]Return MAIN MENU"]
         menuEntryIdx = displayMenu(options, "GET MOVIE BY ID:\n-----------------")
-        
+
         if options[menuEntryIdx] == options[0]:
             id = int(input("Movie ID: "))
             #GET requests
@@ -36,7 +37,7 @@ def getMovieById(id = -1):
 def getMovieByTitle():
     options = ["[1]Define Title to get","[0]Return MAIN MENU"]
     menuEntryIdx = displayMenu(options, "GET MOVIE BY TITLE:\n--------------------")
-    
+
     if options[menuEntryIdx] == options[0]:
         id = int(input("Movie Title: "))
         #GET requests
@@ -51,7 +52,7 @@ def getMovieBatch(title = ""):
     if title == "":
         options = ["[1]Get Movie Batch","[0]Return MAIN MENU"]
         menuEntryIdx = displayMenu(options, "GET MOVIE BATCH:\n---------------")
-        
+
         if options[menuEntryIdx] == options[0]:
             #GET requests
             pass
@@ -67,7 +68,7 @@ def getMovieBatch(title = ""):
 def getMovieBatch():
     options = ["[1]Get Movie Batch","[0]Return MAIN MENU"]
     menuEntryIdx = displayMenu(options, "GET MOVIE BATCH:\n---------------")
-    
+
     if options[menuEntryIdx] == options[0]:
         # GET requests
         pass
@@ -80,11 +81,11 @@ def getMovieBatch():
 def addMovie():
     options = ["[1]Input Movie Data","[0]Return MAIN MENU"]
     menuEntryIdx = displayMenu(options, "INPUT MOVIE DATA:\n----------------")
-    
+
     if options[menuEntryIdx] == options[0]:
         data = inputMovieData()
         # POST resquests
-    
+
     elif options[menuEntryIdx] == options[1]:
         main()
     else:
@@ -99,34 +100,74 @@ def inputMovieData(_data = {"title":"",
                             "downloadDate":"",
                             "subtitle":False,
                             "status":0}):
+	if _data["title"]:
 
-    while(_data["title"] == ""):
-        _data["title"] = input("Title (mandatory):")
-    
-    _data["altTitle"] = input("Alternative Title: ")
-    
-    while (_data["year"] < 1900 or _data["year"] > 2100):
-        _data["year"] = int(input("Year [YYYY] (mandatory):"))
+	    while(not _data["title"]):
+    	    _data["title"] = input("Title (mandatory):")
 
-    _data["originCountry"] = input("Country of Origin: ")
+	    _data["altTitle"] = input("Alternative Title: ")
 
-    _data["releaseDate"] = input("Release Date (YYYY-MM-DD): ")
+	    while (_data["year"] < 1900 or _data["year"] > 2100):
+	        _data["year"] = int(input("Year [YYYY] (mandatory):"))
 
-    _data["downloadDate"] = input("Release Date (YYYY-MM-DD): ")
+	    _data["originCountry"] = input("Country of Origin: ")
 
-    _subtitleTxt = input("Has subtitles? (y/N):")
-    if (_subtitleTxt == "y"):
-        _data["subtitle"] = True
+	    _data["releaseDate"] = input("Release Date (YYYY-MM-DD): ")
 
-    _statusOpt = ["[0] Recorded","[1] Downloaded","[2] Pending","[3] Seen"]
-    _data["status"] = displayMenu(_statusOpt)
+	    _data["downloadDate"] = input("Release Date (YYYY-MM-DD): ")
+
+	    _subtitleTxt = input("Has subtitles? (y/N):")
+	    if (_subtitleTxt == "y"):
+	        _data["subtitle"] = True
+
+    	_statusOpt = ["[0] Recorded","[1] Downloaded","[2] Pending","[3] Seen"]
+	    _data["status"] = displayMenu(_statusOpt)
+
+	else:
+		_data["title"] = validateStr("Title", _data["title"])
+
+		_data["altTitle"] = validateStr("Alternative Title", _data["altTitle"])
+
+		_data["year"] = validateInt("Year", _data["year"])
+
+	    _data["originCountry"] = validateStr("Country of Origin", _data["originCountry"])
+
+	    _data["releaseDate"] = validateStr("Release Date (YYYY-MM-DD)", _data["releaseDate"])
+
+	    _data["downloadDate"] = validateStr("Release Date (YYYY-MM-DD)", _data["downloadDate"])
+
+		#_subtitleTxt = validateStr("Has subtitles? (y/n)", _data["subtitle"])
+
+        #if (_subtitleTxt == "y"):
+        #    _data["subtitle"] = True
+
 
     return _data
+
+def validateStr(label, data):
+	value = data
+	_str = label + " [" + data + "]:"
+	_temp = input(_str)
+
+	if _temp:
+		value = _temp
+
+	return value
+
+def validateInt(label, data):
+	value = data
+	_str = label + " [" + str(data) + "]:"
+	_temp = input(_str)
+
+	if _temp:
+		value = int(_temp)
+
+	return value
 
 def updateMovie():
     options = ["[1]Define ID to get","[0]Return MAIN MENU"]
     menuEntryIdx = displayMenu(options, "GET MOVIE BY ID:\n-----------------")
-    
+
     if options[menuEntryIdx] == options[0]:
         id = int(input("Movie ID: "))
         #GET requests
