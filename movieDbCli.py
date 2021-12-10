@@ -134,13 +134,12 @@ def inputMovieData(_data = {"title":"",
 
 	    _data["releaseDate"] = validateStr("Release Date (YYYY-MM-DD)", _data["releaseDate"])
 
-	    _data["downloadDate"] = validateStr("Release Date (YYYY-MM-DD)", _data["downloadDate"])
+	    _data["downloadDate"] = validateStr("Download Date (YYYY-MM-DD)", _data["downloadDate"])
 
-		#_subtitleTxt = validateStr("Has subtitles? (y/n)", _data["subtitle"])
+		_data["subtitle"] = validateBool("Has subtitles? (y/n)", _data["subtitle"])
 
-        #if (_subtitleTxt == "y"):
-        #    _data["subtitle"] = True
-
+		options = ["[0]Recorded","[1]Downloaded","[2]Pending","[3]Seen"]
+		_data["status"] = TerminalMenu(options, "Movie status:\n---------", cursor_index = _data["status"])
 
     return _data
 
@@ -163,6 +162,22 @@ def validateInt(label, data):
 		value = int(_temp)
 
 	return value
+
+def validateBool(label, data):
+
+	if int(data):
+		_str = "Yes"
+	else:
+		_str = "No"
+
+	_temp = input(label + " [" + _str + "]:")
+
+	if _temp == "":
+		return int(data)
+	elif _temp == "yes" or _temp == "Yes":
+		return True
+	else:
+		return False
 
 def updateMovie():
     options = ["[1]Define ID to get","[0]Return MAIN MENU"]
@@ -189,7 +204,7 @@ def displayMenu(options, menuTitle = ""):
 def main():
     options = ["[1]Get Movie by ID","[2]Get Movie by Title","[3]Get Batch of Movies","[4]Add Movie","[5]Update Movie Data","[6]Delete Movie", "[7]API Info", "[0]Exit"]
     menuEntryIdx = displayMenu(options, "MAIN MENU:\n---------")
-    
+
     if options[menuEntryIdx] == options[0]:
         getMovieById()
     elif options[menuEntryIdx] == options[1]:
