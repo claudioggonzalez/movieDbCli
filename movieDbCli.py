@@ -34,26 +34,13 @@ def getMovieById(id = -1):
         #GET request (id)
         return ()
 
-def getMovieByTitle():
-    options = ["[1]Define Title to get","[0]Return MAIN MENU"]
-    menuEntryIdx = displayMenu(options, "GET MOVIE BY TITLE:\n--------------------")
-
-    if options[menuEntryIdx] == options[0]:
-        id = int(input("Movie Title: "))
-        #GET requests
-        pass
-    elif options[menuEntryIdx] == options[1]:
-        main()
-    else:
-        print("Opción Desconocida!!!")
-        exit(1)
-
-def getMovieBatch(title = ""):
+def getMovieByTitle(title = ""):
     if title == "":
-        options = ["[1]Get Movie Batch","[0]Return MAIN MENU"]
-        menuEntryIdx = displayMenu(options, "GET MOVIE BATCH:\n---------------")
+        options = ["[1]Define Title to get","[0]Return MAIN MENU"]
+        menuEntryIdx = displayMenu(options, "GET MOVIE BY TITLE:\n--------------------")
 
         if options[menuEntryIdx] == options[0]:
+            id = int(input("Movie Title: "))
             #GET requests
             pass
         elif options[menuEntryIdx] == options[1]:
@@ -100,46 +87,48 @@ def inputMovieData(_data = {"title":"",
                             "downloadDate":"",
                             "subtitle":False,
                             "status":0}):
-	if _data["title"]:
+    if _data["title"]:
 
-	    while(not _data["title"]):
-    	    _data["title"] = input("Title (mandatory):")
+        while (_data["title"] == ""):
+            _data["title"] = input("Title (mandatory):")
+            
+        _data["altTitle"] = input("Alternative Title: ")
+        
+        while (_data["year"] < 1900 or _data["year"] > 2100):
+            _data["year"] = int(input("Year [YYYY] (mandatory):"))
+            
+        _data["originCountry"] = input("Country of Origin: ")
+        
+        _data["releaseDate"] = input("Release Date (YYYY-MM-DD): ")
+        
+        _data["downloadDate"] = input("Release Date (YYYY-MM-DD): ")
+        
+        _subtitleTxt = input("Has subtitles? (y/N):")
+        
+        if (_subtitleTxt == "y"):
+            _data["subtitle"] = True
 
-	    _data["altTitle"] = input("Alternative Title: ")
-
-	    while (_data["year"] < 1900 or _data["year"] > 2100):
-	        _data["year"] = int(input("Year [YYYY] (mandatory):"))
-
-	    _data["originCountry"] = input("Country of Origin: ")
-
-	    _data["releaseDate"] = input("Release Date (YYYY-MM-DD): ")
-
-	    _data["downloadDate"] = input("Release Date (YYYY-MM-DD): ")
-
-	    _subtitleTxt = input("Has subtitles? (y/N):")
-	    if (_subtitleTxt == "y"):
-	        _data["subtitle"] = True
-
-    	_statusOpt = ["[0] Recorded","[1] Downloaded","[2] Pending","[3] Seen"]
-	    _data["status"] = displayMenu(_statusOpt)
-
-	else:
-		_data["title"] = validateStr("Title", _data["title"])
-
-		_data["altTitle"] = validateStr("Alternative Title", _data["altTitle"])
-
-		_data["year"] = validateInt("Year", _data["year"])
-
-	    _data["originCountry"] = validateStr("Country of Origin", _data["originCountry"])
-
-	    _data["releaseDate"] = validateStr("Release Date (YYYY-MM-DD)", _data["releaseDate"])
-
-	    _data["downloadDate"] = validateStr("Download Date (YYYY-MM-DD)", _data["downloadDate"])
-
-		_data["subtitle"] = validateBool("Has subtitles? (y/n)", _data["subtitle"])
-
-		options = ["[0]Recorded","[1]Downloaded","[2]Pending","[3]Seen"]
-		_data["status"] = TerminalMenu(options, "Movie status:\n---------", cursor_index = _data["status"])
+        _statusOpt = ["[0] Recorded","[1] Downloaded","[2] Pending","[3] Seen"]
+        _data["status"] = displayMenu(_statusOpt)
+        
+    else:
+        
+        _data["title"] = validateStr("Title", _data["title"])
+        
+        _data["altTitle"] = validateStr("Alternative Title", _data["altTitle"])
+        
+        _data["year"] = validateInt("Year", _data["year"])
+        
+        _data["originCountry"] = validateStr("Country of Origin", _data["originCountry"])
+        
+        _data["releaseDate"] = validateStr("Release Date (YYYY-MM-DD)", _data["releaseDate"])
+        
+        _data["downloadDate"] = validateStr("Download Date (YYYY-MM-DD)", _data["downloadDate"])
+        
+        _data["subtitle"] = validateBool("Has subtitles? (y/n)", _data["subtitle"])
+        
+        _options = ["[0]Recorded","[1]Downloaded","[2]Pending","[3]Seen"]
+        _data["status"] = TerminalMenu(_options, "Movie status:\n---------", cursor_index = _data["status"])
 
     return _data
 
@@ -181,12 +170,12 @@ def validateBool(label, data):
 
 def updateMovie():
     options = ["[1]Define ID to get","[0]Return MAIN MENU"]
-    menuEntryIdx = displayMenu(options, "GET MOVIE BY ID:\n-----------------")
+    menuEntryIdx = displayMenu(options, "UPDATE MOVIE BY ID:\n-------------------")
 
     if options[menuEntryIdx] == options[0]:
         id = int(input("Movie ID: "))
-        #GET requests
-        #Show movie data from request
+        #PUT requests
+        #Show movie data from request and ask for modificactions
         pass
     elif options[menuEntryIdx] == options[1]:
         main()
@@ -194,6 +183,23 @@ def updateMovie():
         print("Opción Desconocida!!!")
         exit(1)
 
+def deleteMoviebyId():
+    options = ["[1]Define ID to delete","[0]Return MAIN MENU"]
+    menuEntryIdx = displayMenu(options, "DELETE MOVIE BY ID:\n-------------------")
+
+    if options[menuEntryIdx] == options[0]:
+        id = int(input("Movie ID: "))
+        #DELETE requests
+        #Show movie data from request and ask for modificactions
+        pass
+    elif options[menuEntryIdx] == options[1]:
+        main()
+    else:
+        print("Opción Desconocida!!!")
+        exit(1)
+
+def getApiInfo():
+    # GET request de Version de API
     pass
 
 def displayMenu(options, menuTitle = ""):
@@ -216,10 +222,9 @@ def main():
     elif options[menuEntryIdx] == options[4]:
         updateMovie()
     elif options[menuEntryIdx] == options[5]:
-        #Delete Movie (pedir id, confirmacion, mostrar datos, confirmacion, borrar)
-        pass
+        deleteMoviebyId()
     elif options[menuEntryIdx] == options[6]:
-        #showApiInfo()
+        getApiInfo()
         pass
     elif options[menuEntryIdx] == options[7]:
         print("Saliendo...\n")
