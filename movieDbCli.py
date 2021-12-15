@@ -24,15 +24,21 @@ def getMovieById(id = -1):
 
         if options[menuEntryIdx] == options[0]:
             id = int(input("Movie ID: "))
-            #GET requests
         elif options[menuEntryIdx] == options[1]:
             main()
         else:
-            print("Opción Desconocida!!!")
+            print("Unknown option!!!")
             exit(1)
+    
+    response = requests.get(fullAddress+"getId/"+str(id)+"/")
+    printLog(DEBUG, "Status Code: "+str(response.status_code))
+    printLog(DEBUG, "Data: "+response.text+"\n")
+    
+    if response.status_code == 200:
+        showFullTable(response.json())
     else:
-        #GET request (id)
-        return ()
+        print("ERROR!!! Code: " + str(response.status_code))
+
 
 def getMovieByTitle(title = ""):
     if title == "":
@@ -40,29 +46,41 @@ def getMovieByTitle(title = ""):
         menuEntryIdx = displayMenu(options, "GET MOVIE BY TITLE:\n--------------------")
 
         if options[menuEntryIdx] == options[0]:
-            id = int(input("Movie Title: "))
-            #GET requests
-            pass
+            title = input("Movie Title: ")
         elif options[menuEntryIdx] == options[1]:
             main()
         else:
-            print("Opción Desconocida!!!")
+            print("Unknown option!!!")
             exit(1)
+    
+    response = requests.get(fullAddress+"getTitle/"+title+"/")
+    printLog(DEBUG, "Status Code: "+str(response.status_code))
+    printLog(DEBUG, "Data: "+response.text+"\n")
+    
+    if response.status_code == 200:
+        showFullTable(response.json())
     else:
-        #GET request
-        return()
+        print("ERROR!!! Code: " + str(response.status_code))
 
 def getMovieBatch():
     options = ["[1]Get Movie Batch","[0]Return MAIN MENU"]
     menuEntryIdx = displayMenu(options, "GET MOVIE BATCH:\n---------------")
 
     if options[menuEntryIdx] == options[0]:
-        # GET requests
-        pass
+        response = requests.get(fullAddress+"getBatch")
+        printLog(DEBUG, "Status Code: "+str(response.status_code))
+        printLog(DEBUG, "Data: "+response.text+"\n")
+        
+        if response.status_code == 200:
+            #showBatchTable(response.json())
+            pass
+        else:
+            print("ERROR!!! Code: " + str(response.status_code))
+    
     elif options[menuEntryIdx] == options[1]:
         main()
     else:
-        print("Opción Desconocida!!!")
+        print("Unknown option!!!")
         exit(1)
 
 def addMovie():
@@ -180,7 +198,7 @@ def updateMovie():
     elif options[menuEntryIdx] == options[1]:
         main()
     else:
-        print("Opción Desconocida!!!")
+        print("Unknown option!!!")
         exit(1)
 
 def deleteMoviebyId():
@@ -195,17 +213,35 @@ def deleteMoviebyId():
     elif options[menuEntryIdx] == options[1]:
         main()
     else:
-        print("Opción Desconocida!!!")
+        print("Unknown option!!!")
         exit(1)
 
 def getApiInfo():
-    # GET request de Version de API
-    pass
+    response = requests.get(fullAddress)
+    table = Texttable()
 
 def displayMenu(options, menuTitle = ""):
     menu = TerminalMenu(options, title=menuTitle)
     idx = menu.show()
     return idx
+
+def showFullTable(dataList):
+    data = dataList[0]
+    hasSubs = lambda x: "Yes" if x == 1 else "No"
+    null2empty = lambda x: x if x != None else "-"
+    table = Texttable()
+    table.add_rows([["ITEM","VALUE"],
+                    ["ID",data["id"]],
+                    ["Title",data["title"]],
+                    ["Alternative Title",null2empty(data["altTitle"])],
+                    ["Year",data["year"]],
+                    ["Country of Origin",null2empty(data["originCountry"])],
+                    ["Release Date",null2empty(data["releaseDate"])],
+                    ["Download Date",null2empty(data["downloadDate"])],
+                    ["Subtitles",hasSubs(data["subtitle"])],
+                    ["Status",data["status"]]])
+    print(table.draw())
+    print("\n")
 
 def main():
     options = ["[1]Get Movie by ID","[2]Get Movie by Title","[3]Get Batch of Movies","[4]Add Movie","[5]Update Movie Data","[6]Delete Movie", "[7]API Info", "[0]Exit"]
@@ -227,10 +263,10 @@ def main():
         getApiInfo()
         pass
     elif options[menuEntryIdx] == options[7]:
-        print("Saliendo...\n")
+        print("Exit...\n")
         exit(0)
     else:
-        print("Opción Desconocida!!!")
+        print("Unknown option!!!")
         exit(1)
 
 if __name__ == "__main__":
@@ -247,6 +283,6 @@ if __name__ == "__main__":
         LOG_LEVEL = int(config["Logging"]["LOGLEVEL"])
 
         global fullAddress
-        fullAddress = address+":"+port+"/api/"
+        fullAddress = "http://"+address+":"+port+"/api/"
         printLog(DEBUG, "Address to connect: " + fullAddress + "\n")
         main()
